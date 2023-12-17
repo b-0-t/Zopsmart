@@ -1,10 +1,32 @@
 package main
 
-import "net/http"
+import {
+	"net/http"
+	"github.com/gorilla/mux"
+}
+
+type apiFunc func(http.ResponseWriter, *http.Request) error
+
+type ApiError struct {
+	Error string `json:"error"`
+}
+
+func makeHTTPHandleFunc(f apiFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if err := f(w, r); err != nil {
+			WriteJSON(w, http.StatusBadRequest, ApiError{Error: err.Error()})
+		}
+	}
+}
 
 // APIserver represents the configuration for the API server.
 type APIserver struct {
 	listenAddr string
+}
+
+func (a *APIserver) Run() {
+	router:=mux.NewRouter()
+	router.HandleFunc("/account",a.handleAccount)
 }
 
 // NewAPIserver creates a new instance of the APIserver.
@@ -13,6 +35,11 @@ func NewAPIserver(listenAddr string) *APIserver {
 }
 
 //routes
+func (a *APIserver) handleAccount(w http.ResponseWriter, r *http.Request) error {
+	return nil
+}
+
+
 func (a *APIserver) handleGetAccount(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
