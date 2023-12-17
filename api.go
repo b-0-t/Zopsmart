@@ -12,6 +12,7 @@ func NewAPIserver(listenAddr string) *APIserver {
 	return &APIserver{listenAddr: listenAddr}
 }
 
+//routes
 func (a *APIserver) handleGetAccount(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
