@@ -1,9 +1,13 @@
 package main
 
-import {
+import (
+	"encoding/json"
+	"fmt"
+	"log"
 	"net/http"
+
 	"github.com/gorilla/mux"
-}
+)
 
 func WriteJSON(w http.ResponseWriter, status int, v any) error {
 	w.Header().Add("Content-Type", "application/json")
@@ -11,7 +15,6 @@ func WriteJSON(w http.ResponseWriter, status int, v any) error {
 
 	return json.NewEncoder(w).Encode(v)
 }
-
 
 type apiFunc func(http.ResponseWriter, *http.Request) error
 
@@ -32,12 +35,9 @@ type APIserver struct {
 	listenAddr string
 }
 
-func (a *APIserver) Run() {
-	router:=mux.NewRouter()
-	router.HandleFunc("/login", makeHTTPHandleFunc(s.handleLogin))
-	router.HandleFunc("/account", makeHTTPHandleFunc(s.handleAccount))
-	router.HandleFunc("/account/{id}", withJWTAuth(makeHTTPHandleFunc(s.handleGetAccountByID), s.store))
-	router.HandleFunc("/transfer", makeHTTPHandleFunc(s.handleTransfer))
+func (s *APIserver) Run() {
+	router := mux.NewRouter()
+	router.HandleFunc("/login", makeHTTPHandleFunc(s.handleAccount))
 
 	log.Println("JSON API server running on port: ", s.listenAddr)
 
@@ -49,8 +49,8 @@ func NewAPIserver(listenAddr string) *APIserver {
 	return &APIserver{listenAddr: listenAddr}
 }
 
-//routes
-func (a *APIserver) handleAccount(w http.ResponseWriter, r *http.Request) error {
+// routes
+func (s *APIserver) handleAccount(w http.ResponseWriter, r *http.Request) error {
 	if r.Method == "GET" {
 		return s.handleGetAccount(w, r)
 	}
@@ -61,19 +61,18 @@ func (a *APIserver) handleAccount(w http.ResponseWriter, r *http.Request) error 
 	return fmt.Errorf("method not allowed %s", r.Method)
 }
 
-
-func (a *APIserver) handleGetAccount(w http.ResponseWriter, r *http.Request) error {
+func (s *APIserver) handleGetAccount(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func (a *APIserver) handleCreateAccount(w http.ResponseWriter, r *http.Request) error {
+func (s *APIserver) handleCreateAccount(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func (a *APIserver) handleDeleteAccount(w http.ResponseWriter, r *http.Request) error {
+func (s *APIserver) handleDeleteAccount(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func (a *APIserver) handleTansfer(w http.ResponseWriter, r *http.Request) error {
+func (s *APIserver) handleTansfer(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
