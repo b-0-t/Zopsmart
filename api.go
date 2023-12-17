@@ -34,7 +34,14 @@ type APIserver struct {
 
 func (a *APIserver) Run() {
 	router:=mux.NewRouter()
-	router.HandleFunc("/account",a.handleAccount)
+	router.HandleFunc("/login", makeHTTPHandleFunc(s.handleLogin))
+	router.HandleFunc("/account", makeHTTPHandleFunc(s.handleAccount))
+	router.HandleFunc("/account/{id}", withJWTAuth(makeHTTPHandleFunc(s.handleGetAccountByID), s.store))
+	router.HandleFunc("/transfer", makeHTTPHandleFunc(s.handleTransfer))
+
+	log.Println("JSON API server running on port: ", s.listenAddr)
+
+	http.ListenAndServe(s.listenAddr, router)
 }
 
 // NewAPIserver creates a new instance of the APIserver.
