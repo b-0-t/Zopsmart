@@ -62,6 +62,12 @@ func (s *APIserver) handleAccount(w http.ResponseWriter, r *http.Request) error 
 }
 
 func (s *APIserver) handleGetAccount(w http.ResponseWriter, r *http.Request) error {
+	// accounts, err := s.store.GetAccounts()
+	// if err != nil {
+	// 	return err
+	// }
+
+	// return WriteJSON(w, http.StatusOK, accounts)
 	return nil
 }
 
